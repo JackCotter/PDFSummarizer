@@ -1,3 +1,5 @@
 pytesseract
 numpy
 pdf2image
+openai
+argparse
