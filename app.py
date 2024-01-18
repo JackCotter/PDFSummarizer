@@ -30,21 +30,21 @@ def convert_pdf_to_text(args):
 
   prompt_messages = [
       {"role": "system", "content": "You are a skilled software engineer"},
-      {"role": "user", "content": "please summarize the following text in few words. Please ignore sentences that don't make sense. Give important talking points on the content. I will give it to you in sections."},
+      {"role": "user", "content": "please summarize the following text in few short bullet points. Please ignore sentences that don't make sense."},
   ]
   last_index = 0
   for new_index in range(3000, len(total_text) + 3000, 3000):
     if new_index >= len(total_text):
       new_index = len(total_text)
-    print(last_index, new_index)
-    prompt_messages.append({"role": "user", "content": total_text[last_index:new_index]},)
+    current_messages = prompt_messages.copy()
+    current_messages.append({"role": "user", "content": total_text[last_index:new_index]},)
+    completion = client.chat.completions.create(
+      model="gpt-3.5-turbo",
+      messages=current_messages,
+    )
+    print(completion.choices[0].message.content)
     last_index = new_index
     
-  completion = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=prompt_messages,
-  )
-  print(completion.choices[0].message.content)
   # print(total_text)
 
 if __name__ == '__main__':
