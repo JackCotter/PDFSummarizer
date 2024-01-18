@@ -33,6 +33,7 @@ def convert_pdf_to_text(args):
       {"role": "user", "content": "please summarize the following text in few short bullet points. Please ignore sentences that don't make sense."},
   ]
   last_index = 0
+  total_resonse_text = ''
   for new_index in range(3000, len(total_text) + 3000, 3000):
     if new_index >= len(total_text):
       new_index = len(total_text)
@@ -43,9 +44,18 @@ def convert_pdf_to_text(args):
       messages=current_messages,
     )
     print(completion.choices[0].message.content)
+    total_resonse_text += completion.choices[0].message.content
     last_index = new_index
     
-  # print(total_text)
+  completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+      {"role": "system", "content": "You are a skilled software engineer"},
+      {"role": "user", "content": "Please summarize the following bullet points to be more concise, without losing any information."},
+      {"role": "user", "content": total_resonse_text},
+],
+  )
+  print("======== overall summary ========" + "\n" + completion.choices[0].message.content)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(description="")
